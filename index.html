@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Term & Home — Treasury duration and mortgage rates</title>
+<style>
+:root{--bg:#f5f4ef;--ink:#163531;--muted:#63736d;--line:#d9dfd6;--green:#217a65;--gold:#b67623;--blue:#466eac}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,sans-serif}main{max-width:1160px;margin:auto;padding:28px 32px 60px}nav{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:20px}.brand{font-weight:800;letter-spacing:-.7px;font-size:22px}.badge{font-size:12px;background:#e5ece3;padding:5px 11px;border-radius:20px}.eyebrow{text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:750;color:var(--green)}h1{font:500 clamp(34px,5vw,58px)/1.08 Georgia,serif;letter-spacing:-1.8px;max-width:810px;margin:15px 0 19px}header{padding:37px 0 25px}header p{max-width:680px;color:var(--muted);font-size:16px}h2{font-size:19px;letter-spacing:-.3px;margin:0}h3{margin:0;font-size:15px}.controls{display:flex;gap:16px;flex-wrap:wrap;align-items:end;margin:10px 0 22px}label{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:5px}select,button{font:inherit;border:1px solid #bdcbbf;background:white;color:var(--ink);border-radius:7px;padding:9px 12px}button{cursor:pointer}button:hover{background:#e6eee5}button.primary{background:var(--ink);color:white}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:23px;margin-bottom:20px}.claim{background:var(--ink);color:#fff;padding:28px;border-radius:12px;margin-bottom:20px}.claim .eyebrow{color:#a5d7b8}.claim p{font:400 24px/1.45 Georgia,serif;margin:10px 0 12px}.claim small{color:#bbd0c5}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px}.metric{background:white;border:1px solid var(--line);padding:20px;border-radius:10px}.metric .value{font-size:32px;letter-spacing:-1px;font-weight:650;margin:6px 0}.metric small{color:var(--muted)}.green{color:var(--green)}.gold{color:var(--gold)}.blue{color:var(--blue)}.section-head{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:14px}.note{font-size:12px;color:var(--muted)}.chart-row{padding:18px 0 6px;border-top:1px solid #edf0e9}.chart-row:first-of-type{border:0}.chart-label{display:flex;justify-content:space-between;gap:10px;font-size:13px;font-weight:650}.chart-label small{font-weight:400;color:var(--muted)}svg{display:block;width:100%;height:auto;overflow:visible}svg text{font-family:system-ui,sans-serif;fill:#6a786f;font-size:11px}.readout{height:25px;font-size:12px;color:var(--muted);text-align:right}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}.grid2 .panel{margin:0}table{border-collapse:collapse;width:100%;font-size:13px;margin-top:14px}td,th{text-align:left;border-bottom:1px solid #e5e9e2;padding:10px 5px}td:not(:first-child),th:not(:first-child){text-align:right}.formula{font:15px/1.9 ui-monospace,monospace;background:#f1f5ee;border-radius:8px;padding:14px;margin:15px 0;overflow:auto}details{margin-top:20px}summary{cursor:pointer;font-weight:650}details p,details li{font-size:13px;color:var(--muted)}a{color:var(--green)}footer{font-size:12px;color:var(--muted);margin-top:25px}.notice{background:#eee8d9;padding:10px 14px;border-radius:7px;font-size:12px;color:#6d592d;margin-bottom:22px}.error{color:#a13f28;font-size:13px;min-height:20px}button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #b9d5a6;outline-offset:3px}
+@media(max-width:720px){main{padding:20px 16px}.cards,.grid2{grid-template-columns:1fr}.metric{padding:14px 18px}.metric .value{font-size:27px}.claim p{font-size:21px}.panel{padding:16px}.section-head{align-items:start;flex-direction:column}.controls{gap:10px}select{max-width:100%}h1{letter-spacing:-1px}.badge{font-size:10px}}
+</style>
+</head>
+<body>
+<main>
+<nav><span class="brand">Term & Home<span class="green">.</span></span><span class="badge">U.S. rates observatory</span></nav>
+<header>
+<div class="eyebrow">Treasuries → mortgage market</div>
+<h1>When term premium moves,<br>what happens to mortgages?</h1>
+<p>Explore seven years of Treasury duration, the estimated 10-year term premium, and U.S. 30-year fixed mortgage rates. Pick a window and inspect the numbers behind the comparison.</p>
+</header>
+<div class="notice">Interactive preview · Verified historical snapshot: January 2018–December 2024 · No automatic updates · A public hosting URL is still needed for submission.</div>
+
+<section aria-label="Comparison window">
+<div class="controls">
+<label>Start observation<select id="start" aria-label="Start observation"></select></label>
+<label>End observation<select id="end" aria-label="End observation"></select></label>
+<button class="primary" id="preset">2023 rate rise</button>
+<button id="full">Full history</button>
+<button id="download">Export data ↓</button>
+</div>
+<div class="error" id="error" role="status"></div>
+</section>
+
+<section class="claim" aria-live="polite">
+<div class="eyebrow">The cross-market finding</div>
+<p id="claim"></p>
+<small>The numbers establish co-movement over this window, not a causal effect. Mortgage rates also reflect expected short rates, mortgage spreads, and other factors.</small>
+</section>
+
+<section class="cards" aria-label="Changes over the selected window">
+<div class="metric"><div>10-year term premium</div><div class="value green" id="tpchange"></div><small id="tplevels"></small></div>
+<div class="metric"><div>30-year fixed mortgage rate</div><div class="value gold" id="mchange"></div><small id="mlevels"></small></div>
+<div class="metric"><div>Modified Treasury duration</div><div class="value blue" id="duration"></div><small id="dchange"></small></div>
+</section>
+
+<section class="panel">
+<div class="section-head"><div><h2>History, on a shared timeline</h2><div class="note">Monthly snapshots · Selected window shaded · Point at a chart for exact values</div></div><span class="badge">2018–2024</span></div>
+<div class="chart-row"><div class="chart-label blue">Treasury modified duration <small>Years · Calculated</small></div><svg id="durationChart" viewBox="0 0 1000 175" role="img" aria-label="Historical modified duration of a hypothetical 10-year Treasury"></svg></div>
+<div class="chart-row"><div class="chart-label green">10-year term premium <small>Percent · Kim–Wright estimate</small></div><svg id="termChart" viewBox="0 0 1000 175" role="img" aria-label="Historical Kim–Wright 10-year Treasury term premium"></svg></div>
+<div class="chart-row"><div class="chart-label gold">30-year fixed mortgage rate <small>Percent · Freddie Mac PMMS</small></div><svg id="mortgageChart" viewBox="0 0 1000 175" role="img" aria-label="Historical U.S. 30-year fixed mortgage rate"></svg></div>
+<div class="readout" id="readout" aria-live="polite">All charts use separate, labeled vertical scales.</div>
+</section>
+
+<div class="grid2">
+<section class="panel">
+<h2>The comparison, in numbers</h2>
+<div class="note" id="windowLabel"></div>
+<table><thead><tr><th>Measure</th><th>Start</th><th>End</th><th>Change</th></tr></thead><tbody id="comparison"></tbody></table>
+<p class="note">Rates are percentages. Changes are basis points: 100 bp = 1 percentage point. Each point uses the last mortgage observation in its calendar month.</p>
+</section>
+<section class="panel">
+<h2>Inside the duration calculation</h2>
+<div class="note">Hypothetical Treasury · $1,000 face · 4% fixed coupon · 10 years · Semiannual payments</div>
+<div class="formula">P = Σ CFₜ / (1 + y/2)ᵗ<br>D<sub>Mac</sub> = Σ [(t/2) × PV(CFₜ)] / P<br>D<sub>mod</sub> = D<sub>Mac</sub> / (1 + y/2)<br>DV01 ≈ P × D<sub>mod</sub> × 0.0001</div>
+<div id="bondNumbers" class="note"></div>
+</section>
+</div>
+
+<section class="panel" style="margin-top:20px">
+<h2>Sources & methodology</h2>
+<details open><summary>What each series measures</summary>
+<ul>
+<li><a href="https://fred.stlouisfed.org/series/DGS10" target="_blank" rel="noopener">DGS10 — 10-year Treasury constant-maturity yield</a>, Board of Governors via FRED. Used as a yield-to-maturity proxy to discount the hypothetical bond’s cash flows.</li>
+<li><a href="https://fred.stlouisfed.org/series/THREEFYTP10" target="_blank" rel="noopener">THREEFYTP10 — term premium on a 10-year zero-coupon bond</a>, Board of Governors via FRED. This is the <strong>Kim–Wright</strong> model estimate, not the New York Fed’s ACM series. The assignment permits any public data. Term premium is estimated and can be revised.</li>
+<li><a href="https://fred.stlouisfed.org/series/MORTGAGE30US" target="_blank" rel="noopener">MORTGAGE30US — average U.S. 30-year fixed mortgage rate</a>, Freddie Mac’s Primary Mortgage Market Survey via FRED. This is a borrowing rate, not a mortgage-backed security price or an individual loan offer.</li>
+</ul>
+</details>
+<details><summary>Alignment, historical coverage & limitations</summary>
+<p>The embedded snapshot covers January 2018 through December 2024. It contains the last published mortgage observation in each calendar month, rather than monthly averages. Treasury yield and term premium are matched to the latest available nonmissing daily observation on or before that mortgage observation date. The exported CSV includes the underlying Treasury observation dates.</p>
+<p>Weekly mortgage observations summarize a survey period, while the Treasury series are daily observations. Matching dates does not make the underlying measurement periods identical. Freddie Mac changed its survey methodology on November 17, 2022; comparisons crossing that date require care.</p>
+<p>The bond is reset to a full 10-year maturity at every observation, with the same 4% coupon. This makes historical duration comparable across dates; it does not track a single aging Treasury security. The calculation assumes a flat discount rate equal to DGS10, immediate coupon-date settlement, no accrued interest, and no transaction costs. It is a transparent illustrative measure, not a quoted duration for a specific Treasury CUSIP.</p>
+<p>Mortgage rates do not equal Treasury yields plus term premium: term premium is already part of long-term Treasury yields. A common movement does not establish that term premium caused the mortgage-rate change.</p>
+</details>
+<details><summary>Reproduce the data</summary>
+<p>Download the public histories from <a href="https://fred.stlouisfed.org/data/DGS10" target="_blank" rel="noopener">DGS10</a>, <a href="https://fred.stlouisfed.org/data/THREEFYTP10" target="_blank" rel="noopener">THREEFYTP10</a>, and <a href="https://fred.stlouisfed.org/data/MORTGAGE30US" target="_blank" rel="noopener">MORTGAGE30US</a>. Select the final mortgage observation each month and match the other series backward by date. Export data above downloads all 84 aligned observations and the calculated bond metrics.</p>
+<p>Source histories checked November 9, 2026. This page deliberately displays a fixed historical snapshot, not current rates. Freddie Mac PMMS data: copyright Freddie Mac; source and methodology available through the linked FRED series.</p>
+</details>
+</section>
+<footer>Term & Home · Educational analysis · Public-data historical snapshot · Built around the duration / term-premium / other-market comparison.</footer>
+</main>
+<script>
+const raw=[
+["2018-01-25",2.63,.2278,4.15],["2018-02-22",2.92,.3445,4.4],["2018-03-29",2.74,.235,4.44],["2018-04-26",3,.3513,4.58],["2018-05-31",2.83,.2481,4.56],["2018-06-28",2.84,.2571,4.55],["2018-07-26",2.98,.3089,4.54],["2018-08-30",2.86,.2242,4.52],["2018-09-27",3.06,.3136,4.72],["2018-10-25",3.14,.316,4.86],["2018-11-29",3.03,.2469,4.81],["2018-12-27",2.77,.0923,4.55],
+["2019-01-31",2.63,.0182,4.46],["2019-02-28",2.73,.052,4.35],["2019-03-28",2.39,-.1167,4.06],["2019-04-25",2.54,-.0381,4.2],["2019-05-30",2.22,-.1915,3.99],["2019-06-27",2.01,-.2617,3.73],["2019-07-25",2.08,-.227,3.75],["2019-08-29",1.5,-.4814,3.58],["2019-09-26",1.7,-.3579,3.64],["2019-10-31",1.69,-.2973,3.78],["2019-11-27",1.77,-.2612,3.68],["2019-12-26",1.9,-.1855,3.74],
+["2020-01-30",1.57,-.3707,3.51],["2020-02-27",1.3,-.4994,3.45],["2020-03-26",.83,-.43,3.5],["2020-04-30",.64,-.5691,3.23],["2020-05-28",.7,-.5741,3.15],["2020-06-25",.68,-.5852,3.13],["2020-07-30",.55,-.6417,2.99],["2020-08-27",.74,-.5721,2.91],["2020-09-24",.67,-.5983,2.9],["2020-10-29",.85,-.5198,2.81],["2020-11-25",.88,-.4938,2.72],["2020-12-31",.93,-.4849,2.67],
+["2021-01-28",1.07,-.4219,2.73],["2021-02-25",1.54,-.1743,2.97],["2021-03-25",1.63,-.0944,3.17],["2021-04-29",1.65,-.0846,2.98],["2021-05-27",1.61,-.1089,2.95],["2021-06-24",1.49,-.1312,3.02],["2021-07-29",1.28,-.257,2.8],["2021-08-26",1.34,-.2119,2.87],["2021-09-30",1.52,-.1031,3.01],["2021-10-28",1.57,-.0429,3.14],["2021-11-24",1.64,.0205,3.1],["2021-12-30",1.52,-.0548,3.11],
+["2022-01-27",1.81,.0994,3.55],["2022-02-24",1.96,.1312,3.89],["2022-03-31",2.32,.32,4.67],["2022-04-28",2.85,.5063,5.1],["2022-05-26",2.75,.4094,5.1],["2022-06-30",2.98,.389,5.7],["2022-07-28",2.68,.0618,5.3],["2022-08-25",3.03,.209,5.55],["2022-09-29",3.76,.4863,6.7],["2022-10-27",3.96,.4638,7.08],["2022-11-23",3.71,.2493,6.58],["2022-12-29",3.83,.2607,6.42],
+["2023-01-26",3.49,.0027,6.13],["2023-02-23",3.88,.2362,6.5],["2023-03-30",3.55,.0593,6.32],["2023-04-27",3.53,-.0424,6.43],["2023-05-25",3.83,.065,6.57],["2023-06-29",3.85,.096,6.71],["2023-07-27",4.01,.1536,6.81],["2023-08-31",4.09,.2064,7.18],["2023-09-28",4.59,.472,7.31],["2023-10-26",4.86,.6267,7.79],["2023-11-30",4.37,.3449,7.22],["2023-12-28",3.84,.0756,6.61],
+["2024-01-25",4.14,.2376,6.69],["2024-02-29",4.25,.3095,6.94],["2024-03-28",4.2,.2732,6.79],["2024-04-25",4.7,.5289,7.17],["2024-05-30",4.55,.4626,7.03],["2024-06-27",4.29,.3089,6.86],["2024-07-25",4.27,.3036,6.78],["2024-08-29",3.87,.1294,6.35],["2024-09-26",3.79,.1874,6.08],["2024-10-31",4.28,.489,6.72],["2024-11-27",4.25,.4783,6.81],["2024-12-26",4.58,.6968,6.85]
+];
+const $=id=>document.getElementById(id);
+const fmt=(v,n=2)=>v.toFixed(n),signed=(v,n=2)=>(v>0?"+":"")+fmt(v,n);
+const date=d=>new Date(d+"T12:00:00Z").toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric",timeZone:"UTC"});
+function bond(yieldPct){
+ const y=yieldPct/100;let price=0,weighted=0;
+ for(let t=1;t<=20;t++){const pv=(20+(t===20?1000:0))/Math.pow(1+y/2,t);price+=pv;weighted+=t/2*pv;}
+ const mac=weighted/price,mod=mac/(1+y/2);return{price,mac,mod,dv01:price*mod*.0001};
+}
+const data=raw.map(([d,y,tp,m])=>({d,y,tp,m,...bond(y)}));
+for(const id of ["start","end"])data.forEach((r,i)=>{const o=document.createElement("option");o.value=i;o.textContent=date(r.d);$(id).append(o)});
+let start=66,end=69;
+function describe(v){return Math.abs(v)<.000001?"was unchanged":`${v>0?"rose":"fell"} ${fmt(Math.abs(v))} basis points`;}
+function update(){
+ const a=+$("start").value,b=+$("end").value;
+ if(a>=b){$("error").textContent="Choose an end observation after the start observation. The results below retain the last valid window.";return;}
+ start=a;end=b;$("error").textContent="";
+ const A=data[a],B=data[b],dt=(B.tp-A.tp)*100,dm=(B.m-A.m)*100;
+ $("claim").textContent=`From ${date(A.d)} to ${date(B.d)}, the estimated 10-year Treasury term premium ${describe(dt)}, while the average rate in the U.S. 30-year fixed mortgage market ${describe(dm)}.`;
+ $("tpchange").textContent=signed(dt)+" bp";$("mchange").textContent=signed(dm)+" bp";
+ $("tplevels").textContent=`${fmt(A.tp,4)}% → ${fmt(B.tp,4)}%`;
+ $("mlevels").textContent=`${fmt(A.m)}% → ${fmt(B.m)}%`;
+ $("duration").textContent=fmt(B.mod,3)+" years";$("dchange").textContent=`At window end · ${signed(B.mod-A.mod,3)} years since start`;
+ $("windowLabel").textContent=date(A.d)+" → "+date(B.d);
+ $("comparison").innerHTML=[
+ ["Term premium",fmt(A.tp,4)+"%",fmt(B.tp,4)+"%",signed(dt)+" bp"],
+ ["Mortgage rate",fmt(A.m)+"%",fmt(B.m)+"%",signed(dm)+" bp"],
+ ["Treasury yield",fmt(A.y)+"%",fmt(B.y)+"%",signed((B.y-A.y)*100)+" bp"],
+ ["Modified duration",fmt(A.mod,3)+" yr",fmt(B.mod,3)+" yr",signed(B.mod-A.mod,3)+" yr"]
+ ].map(row=>"<tr>"+row.map((c,i)=>`<${i?"td":"th"}>${c}</${i?"td":"th"}>`).join("")+"</tr>").join("");
+ $("bondNumbers").innerHTML=`At <strong>${date(B.d)}</strong>, using y = ${fmt(B.y)}%:<br>Calculated price: <strong>$${fmt(B.price)}</strong><br>Macaulay duration: <strong>${fmt(B.mac,3)} years</strong><br>Modified duration: <strong>${fmt(B.mod,3)} years</strong><br>DV01: <strong>$${fmt(B.dv01,4)} per basis point</strong> for $1,000 face value.`;
+ drawAll();
+}
+const NS="http://www.w3.org/2000/svg";
+function element(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;parent.append(e);return e;}
+const charts=[["durationChart","mod","#466eac","years"],["termChart","tp","#217a65","%"],["mortgageChart","m","#b67623","%"]];
+function drawAll(){
+ charts.forEach(([id,key,color,unit])=>{
+ const s=$(id);s.replaceChildren();
+ const values=data.map(r=>r[key]),min=Math.min(...values),max=Math.max(...values),pad=(max-min)*.18,lo=min-pad,hi=max+pad;
+ const t0=Date.parse(data[0].d),t1=Date.parse(data.at(-1).d);
+ const x=i=>64+(Date.parse(data[i].d)-t0)/(t1-t0)*910;
+ const y=v=>137-(v-lo)/(hi-lo)*119;
+ element("rect",{x:x(start),y:10,width:x(end)-x(start),height:132,fill:"#edf1df"},s);
+ for(let j=0;j<4;j++){const v=lo+(hi-lo)*j/3,yy=y(v);element("line",{x1:64,x2:974,y1:yy,y2:yy,stroke:"#e6ebe3"},s);element("text",{x:52,y:yy+4,"text-anchor":"end"},s,fmt(v,2));}
+ if(lo<0&&hi>0)element("line",{x1:64,x2:974,y1:y(0),y2:y(0),stroke:"#93a69b","stroke-dasharray":"4 4"},s);
+ for(let yr=2018;yr<=2024;yr++){const i=data.findIndex(r=>r.d.startsWith(""+yr));element("text",{x:x(i),y:166,"text-anchor":"middle"},s,""+yr);}
+ element("path",{d:data.map((r,i)=>(i?"L":"M")+x(i).toFixed(2)+","+y(r[key]).toFixed(2)).join(" "),fill:"none",stroke:color,"stroke-width":2.5,"stroke-linejoin":"round"},s);
+ [start,end].forEach(i=>{element("line",{x1:x(i),x2:x(i),y1:10,y2:142,stroke:color,"stroke-dasharray":"3 4",opacity:.55},s);element("circle",{cx:x(i),cy:y(data[i][key]),r:4,fill:color,stroke:"white","stroke-width":2},s);});
+ const cursor=element("line",{y1:10,y2:142,stroke:color,visibility:"hidden"},s);
+ const dot=element("circle",{r:4,fill:color,visibility:"hidden"},s);
+ const hit=element("rect",{x:64,y:5,width:910,height:140,fill:"transparent"},s);
+ hit.addEventListener("pointermove",e=>{
+ const p=s.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const local=p.matrixTransform(s.getScreenCTM().inverse());let nearest=0;
+ for(let i=1;i<data.length;i++)if(Math.abs(x(i)-local.x)<Math.abs(x(nearest)-local.x))nearest=i;
+ cursor.setAttribute("x1",x(nearest));cursor.setAttribute("x2",x(nearest));cursor.setAttribute("visibility","visible");
+ dot.setAttribute("cx",x(nearest));dot.setAttribute("cy",y(data[nearest][key]));dot.setAttribute("visibility","visible");
+ const r=data[nearest];$("readout").textContent=`${date(r.d)} · Duration ${fmt(r.mod,3)} yr · Term premium ${fmt(r.tp,4)}% · Mortgage ${fmt(r.m)}%`;
+ });
+ hit.addEventListener("pointerleave",()=>{cursor.setAttribute("visibility","hidden");dot.setAttribute("visibility","hidden");});
+ });
+}
+function setWindow(a,b){$("start").value=a;$("end").value=b;update();}
+$("start").addEventListener("change",update);$("end").addEventListener("change",update);
+$("preset").onclick=()=>setWindow(66,69);$("full").onclick=()=>setWindow(0,data.length-1);
+$("download").onclick=()=>{
+ // These mortgage dates fall on Treasury market holidays.
+ const previous={"2019-11-27":"2019-11-27","2020-11-25":"2020-11-25"};
+ const csv=["mortgage_date,treasury_yield_date,term_premium_date,treasury_yield_pct,kim_wright_term_premium_pct,mortgage_rate_pct,price_per_1000,macaulay_years,modified_years,dv01_dollars",
+ ...data.map(r=>[r.d,previous[r.d]||r.d,previous[r.d]||r.d,r.y,r.tp,r.m,fmt(r.price,6),fmt(r.mac,6),fmt(r.mod,6),fmt(r.dv01,6)].join(","))].join("\n");
+ const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));const a=document.createElement("a");a.href=url;a.download="term-home-history-2018-2024.csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+setWindow(start,end);
+</script>
+</body>
+</html>
